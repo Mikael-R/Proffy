@@ -1,37 +1,56 @@
 import React from "react";
 import whatsappIcon from "../../assets/images/icons/whatsapp.svg";
 import "./styles.css";
+import api from "../../services/api";
 
-function TeacherItem() {
+export interface Teacher {
+  id: number;
+  avatar: string;
+  bio: string;
+  cost: number;
+  name: string;
+  subject: string;
+  whatsapp: string;
+}
+
+interface TeacherItemProps {
+  teacher: Teacher
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher }) => {
+  function createNewConnection() {
+    api.post('connections', {
+      user_id: teacher.id
+    })
+  }
+
   return (
     <article className="teacher-item">
       <header>
         <img
-          src="https://instagram.fjdo5-1.fna.fbcdn.net/v/t51.2885-19/s320x320/83603394_533858587481839_7330428620629868544_n.jpg?_nc_ht=instagram.fjdo5-1.fna.fbcdn.net&_nc_ohc=ShuSvRiakOIAX8y75nW&oh=267807a4d9769d6172f5809741dde0bb&oe=5F50E446"
-          alt="Mikael Rolim"
+          src={teacher.avatar}
+          alt={teacher.name}
         />
         <div>
-          <strong>Mikael Rolim</strong>
-          <span>Programação</span>
+          <strong>{teacher.name}</strong>
+          <span>{teacher.subject}</span>
         </div>
       </header>
 
-      <p>
-        Programador com apenas 14 anos.
-        <br /><br />
-        Fanático pelas tecnologias web e apaixonado por resolver problemas.<br />
-        Back-end é o meu foco, mas de vez em quando faço uma gambiarra na estilização
-      </p>
+      <p>{teacher.bio}</p>
 
       <footer>
         <p>
           Preço/hora
-          <strong>R$ 80,00</strong>
+          <strong>R$ {teacher.cost}</strong>
         </p>
-        <button type="button">
+        <a
+          onClick={createNewConnection}
+          href={`https://wa.me/${teacher.whatsapp}?text="Olá ${teacher.name}, vamos estudar!"`}
+        >
           <img src={whatsappIcon} alt="Whatsapp" />
           Entrar em contato
-        </button>
+        </a>
       </footer>
     </article>
   );
